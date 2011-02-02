@@ -4,14 +4,14 @@ class AncestryMatcher
   end
 
   def matches?(target)
-    target.class.ancestors.include?(@expected)
+    (@target = target).class.ancestors.include?(@expected)
   end
 
   def failure_message
-    "expected #{target} to inherit from #{@expected}"
+    "expected #{@target.inspect} to inherit from #{@expected}"
   end
 
   def negative_failure_message
-    "expected #{target} to not inherit from #{@expected}"
+    "expected #{@target.inspect} to not inherit from #{@expected}"
   end
 end

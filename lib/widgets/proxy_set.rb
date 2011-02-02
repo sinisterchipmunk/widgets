@@ -48,7 +48,21 @@ module Widgets
 
         def enter_widget(entry_point, *args, &block)
           widget = instantiate_widget(widget_entry_points[entry_point])
-          widget.send(entry_point, *args, &block)
+          result = widget.send(entry_point, *args, &block)
+
+          if widget.subprocessing_enabled? && block_given?
+            if method_name = (result.class.respond_to?(:widget_processing_method_name) &&
+                              result.class.send(:widget_processing_method_name))
+              result.send(method_name, &block)
+            else
+              raise Widgets::SubprocessingNotSupported, "Return value #{result.inspect} does not support subprocessing"
+            end
+          end
+
+          result
+#          if widget.subprocessing_enabled? && block_given?
+#
+#          end
         rescue ArgumentError => ae
           if ae.backtrace[0] =~ /#{Regexp::escape entry_point}/
             raise ArgumentError, ae.message, caller

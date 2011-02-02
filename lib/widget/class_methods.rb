@@ -5,6 +5,30 @@ class Widget
     end
 
     # call-seq:
+    #   disable_subprocessing!
+    #
+    # Disables subprocessing for this widget.
+    def disable_subprocessing!
+      @subprocessing_disabled = true
+    end
+
+    # call-seq:
+    #   enable_subprocessing!
+    #
+    # Enables subprocessing for this widget.
+    def enable_subprocessing!
+      @subprocessing_disabled = false
+    end
+
+    def subprocessing_enabled?
+      !@subprocessing_disabled
+    end
+
+    def subprocessing_disabled?
+      !!@subprocessing_disabled
+    end
+
+    # call-seq:
     #   shares :variable_name
     #   shares :variable_one, :variable_two
     #   shares :variable_one => :default_value, :variable_two => [:defaults]
@@ -76,7 +100,6 @@ class Widget
         proxy_module.add_entry_point(method_name)
       end
 
-      # FIXME: is this necessary?
       Widgets.imbue_all(proxy_module)
     end
 

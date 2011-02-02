@@ -5,7 +5,7 @@ class Widget
   extend Widget::ClassMethods
 
   attr_reader :parent
-  delegate :proxy_module, :to => "self.class"
+  delegate :proxy_module, :to => 'self.class'
 
   def initialize(parent)
     @parent = parent
@@ -13,5 +13,21 @@ class Widget
 
   def eigenclass
     class << self; self; end
+  end
+
+  def subprocessing_enabled?
+    !(@subprocessing_disabled ||= self.class.subprocessing_disabled?)
+  end
+
+  def subprocessing_disabled?
+    !!(@subprocessing_disabled ||= self.class.subprocessing_disabled?)
+  end
+
+  def disable_subprocssing!
+    @subprocessing_disabled = true
+  end
+
+  def enable_subprocessing!
+    @subprocessing_disabled = false
   end
 end
