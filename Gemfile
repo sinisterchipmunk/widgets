@@ -1,4 +1,8 @@
 source "http://rubygems.org"
+
+gem 'i18n'
+gem 'activesupport'
+
 # Add dependencies required to use your gem here.
 # Example:
 #   gem "activesupport", ">= 2.3.5"
