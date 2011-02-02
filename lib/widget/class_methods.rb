@@ -1,7 +1,7 @@
 class Widget
   module ClassMethods
     def proxy_module
-      @proxy_module ||= Widget::ProxyModule.new
+      @proxy_module ||= Widget::ProxyModule.new(self)
     end
 
     # call-seq:
@@ -23,11 +23,62 @@ class Widget
           delegate name, "#{name}=", :to => :parent
         end
       end
+
       Widgets.imbue_all(proxy_module)
     end
 
     alias_method :shared, :shares
     alias_method :shared_variable, :shares
+
+    # call-seq:
+    #   entry_point :method_name
+    #   entry_point :method_one, :method_two
+    #
+    # An entry point is a method which is delegated here from the parent object. The user of the
+    # widget calls a method by the name of an entry point on the parent object, and that method
+    # automatically initializes a new widget and then calls the method of the same name within the
+    # widget.
+    #
+    # If a method exists in the widget but is not declared to be an entry point, external users
+    # will have no way to call it. Conversely, if a method is declared to be an entry point but
+    # the method does not exist, the user will get a NoMethodError. You must both define the method
+    # and declare it as an entry point before it can be used properly. It does not matter what order
+    # this is done in.
+    #
+    # Here is a simple example of adding a #go_home entry point to a navigational widget for a GPS object:
+    #
+    #  class GPS
+    #    # ...
+    #  end
+    #
+    #  class NavigationWidget < Widget
+    #    affects :gps
+    #    entry_point :go_home
+    #
+    #    def go_home
+    #      parent.set_destination(home_coordinates)
+    #    end
+    #
+    #    def home_coordinates
+    #      [100, 100]
+    #    end
+    #  end
+    #
+    #  > gps = GPS.new
+    #  > gps.go_home
+    #  #=> GPS is going home!
+    #
+    #  > gps.home_coordinates
+    #  #=> NoMethodError!
+    #
+    def entry_point(*method_names)
+      method_names.each do |method_name|
+        proxy_module.add_entry_point(method_name)
+      end
+
+      # FIXME: is this necessary?
+      Widgets.imbue_all(proxy_module)
+    end
 
     # call-seq:
     #   affects :class_name

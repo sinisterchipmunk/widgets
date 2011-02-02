@@ -22,5 +22,43 @@ module Widgets
         klass.send :include, self if klass.include? self
       end
     end
+
+    # Adds the specified entry point to the proxy set. The entry point will lead into an instance of the specified
+    # subclass of Widget. If the entry point name conflicts with any other entry point names, an error will be raised.
+    def add_entry_point(entry_point, widget_class)
+      entry_points[entry_point] = widget_class
+      class_eval <<-end_code, __FILE__, __LINE__+1
+        def #{entry_point}(*args, &block); enter_widget(:#{entry_point}, *args, &block); end
+      end_code
+    end
+
+    def entry_points
+      @entry_points ||= {}
+    end
+
+    def included(base)
+      base.class_eval do
+        def self.widget_entry_points
+          hash = (@widget_entry_points ||= {})
+          hash.merge! super if superclass.instance_methods.include?('widget_entry_points')
+          hash
+        end
+
+        def widget_entry_points; self.class.widget_entry_points; end
+
+        def enter_widget(entry_point, *args, &block)
+          widget = instantiate_widget(widget_entry_points[entry_point])
+          widget.send(entry_point, *args, &block)
+        rescue ArgumentError => ae
+          if ae.backtrace[0] =~ /#{Regexp::escape entry_point}/
+            raise ArgumentError, ae.message, caller
+          else
+            raise ae
+          end
+        end
+      end
+
+      base.widget_entry_points.merge! entry_points
+    end
   end
 end

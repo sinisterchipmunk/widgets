@@ -45,6 +45,12 @@ module Widgets
       @mapping[key] ||= Widgets::ProxySet.new
     end
 
+    # Returns all proxy sets which include the specified proxy module.
+    def proxy_sets(proxy_module)
+      return [] unless @mapping
+      @mapping.values.select { |value| value.include?(proxy_module) }
+    end
+
     def reset_mapping
       @mapping.clear if @mapping
     end
@@ -54,10 +60,7 @@ module Widgets
     # See: ProxySet#imbue
     #
     def imbue_all(proxy_module)
-      return unless @mapping
-      @mapping.values.each do |set|
-        set.imbue(proxy_module) if set.include?(proxy_module)
-      end
+      proxy_sets(proxy_module).each { |set| set.imbue(proxy_module) }
     end
   end
 

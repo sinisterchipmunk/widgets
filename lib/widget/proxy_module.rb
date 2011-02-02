@@ -19,6 +19,7 @@ class Widget
   #
   #   MyWidget.proxy_module
   #   #=> Widget::ProxyModule
+  #
   class ProxyModule < Module
     # See: Widget::ClassMethods#shares
     def shares(*several_variants)
@@ -29,6 +30,11 @@ class Widget
           shared_variables.merge!({ var => nil })
         end
       end
+    end
+
+    def initialize(widget_class) #:nodoc:
+      @widget_class = widget_class
+      super()
     end
 
     module SharedVariables #:nodoc:
@@ -42,31 +48,38 @@ class Widget
       end
     end
 
-    def included(base) #:nodoc;
-      base.send(:extend, ProxyModule::SharedVariables)
+    def included(base) #:nodoc:
+      # note: base is always a ProxySet
 
+      # Add shared variables to the proxy set
       shared_variables.each do |variable_name, default_value|
-        base.send :add_shared_variable, variable_name, default_value
-      end
-
-      base.send(:define_method, :setup_shared_variables) do
-        self.class.shared_variables.each do |variable_name, default_value|
-          instance_variable_set("@#{variable_name}", (default_value.dup rescue default_value))
+        base.class_eval do
+          define_method(variable_name) { instance_variable_set("@#{variable_name}",
+                                         instance_variable_get("@#{variable_name}") || default_value) }
+          define_method("#{variable_name}=") { |value| instance_variable_set("@#{variable_name}", value) }
         end
       end
 
-      base.class_eval do
-        alias initialize_without_proxies initialize
-        def initialize(*args, &block)
-          setup_shared_variables
-          initialize_without_proxies(*args, &block)
-        end
+      # Add entry points to the proxy set
+      entry_points.each do |entry_point|
+        base.add_entry_point(entry_point, @widget_class)
       end
     end
 
     # An array of shared variable descriptors. Each descriptor is an instance of Hash.
     def shared_variables
       @shared_variables ||= {}
+    end
+
+    # Adds the specified entry point to the proxy set. The entry point will lead into an instance of the specified
+    # subclass of Widget. If the entry point name conflicts with any other entry point names, an error will be raised.
+    def add_entry_point(entry_point)
+      entry_point = entry_point.to_sym unless entry_point.kind_of?(Symbol)
+      entry_points << entry_point unless entry_points.include?(entry_point)
+    end
+
+    def entry_points
+      @entry_points ||= []
     end
   end
 end

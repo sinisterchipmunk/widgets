@@ -11,6 +11,8 @@ describe Widget do
 #    proc { mock_widget("mock") { affects "parent" } }.should raise_error(Widgets::InvalidClassName)
 #  end
   it "should not raise error when a symbol is not given as a class name" do
+    # decided the error made widgets less intuitive. Realistically, a name (for Widgets' use) could be any value
+    # that can be converted to a string -- which means it can be any value. Why would we be limiting it, exactly?
     proc { mock_widget("mock") { affects "parent" } }.should_not raise_error(Widgets::InvalidClassName)
   end
 
@@ -29,5 +31,14 @@ describe Widget do
 
     widget_instance.varname = 1
     parent.varname.should == 1
+  end
+
+  it "should assign default values for shared variables" do
+    mock_widget("mock") do
+      affects :parent
+      shares :shared_array => [1]
+    end
+
+    parent.shared_array.should == [1]
   end
 end
