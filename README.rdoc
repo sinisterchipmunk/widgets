@@ -1,6 +1,24 @@
 = widgets
 
-Description goes here.
+== widget, n : a device that is very useful for a particular job
+
+A core component extracted from {RubyTML}[http://rubytml.com], Widgets make it easier for a developer to add internal
+domain-specific languages (DSLs) to their application while keeping the DSL code separate from the objects it
+manipulates.
+
+"Widgets" is so named because a single Widget would be expected to add a single specific high-level functionality to a
+given object or set of objects. For instance, there might exist a "navigate home" widget for a GPS device, which would
+be in charge of telling the device where "home" is and other low-level details. The user doesn't want to have to work
+with the internals of the GPS directly; (s)he simply wants to tell it to "go_home"! At runtime, all of the widgets
+contribute their own high-level functionality to produce a very powerful DSL.
+
+Widgets define a set of entry point methods (the "go_home" method, for instance), which are dynamically added to the
+objects the widget is designed to affect. This allows you to quickly build a flexible yet powerful Ruby-based DSL for
+virtually any environment.
+
+== INCOMPLETE
+
+More documentation, including examples, to come as soon as I get around to writing them.
 
 == Contributing to widgets
  

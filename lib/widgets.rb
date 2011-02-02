@@ -1,7 +1,16 @@
 require 'active_support/core_ext'
+require 'active_support/dependencies'
 
 require File.join(File.dirname(__FILE__), "widgets/class_methods")
 require File.join(File.dirname(__FILE__), "widgets/errors")
+
+# load the Railtie if Rails is around.
+begin
+  require 'rails'
+  require File.join(File.dirname(__FILE__), "widgets/railtie")
+rescue LoadError
+  # fail silently if Rails isn't around, because we won't miss it
+end
 
 autoload :Widget, File.join(File.dirname(__FILE__), "widget")
 
@@ -61,6 +70,15 @@ module Widgets
     #
     def imbue_all(proxy_module)
       proxy_sets(proxy_module).each { |set| set.imbue(proxy_module) }
+    end
+
+    # Kicks off the widget autoload process. See also Widget::Configuration.
+    def load!
+      configuration.load_paths.each do |load_path|
+        Dir[File.join(load_path, "**/*.rb")].each do |path|
+          ActiveSupport::Dependencies.require_or_load path
+        end
+      end
     end
   end
 

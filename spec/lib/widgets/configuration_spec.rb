@@ -4,15 +4,15 @@ describe Widgets::Configuration do
   context "with default values" do
     it "should set load paths predictably" do
       # make the load paths something testable
-      lp = $LOAD_PATH.dup
-      $LOAD_PATH.clear
-      $LOAD_PATH.push('/a', '/b')
+      lp = ActiveSupport::Dependencies.autoload_paths.dup
+      ActiveSupport::Dependencies.autoload_paths.clear
+      ActiveSupport::Dependencies.autoload_paths.push('/a', '/b')
 
       Widgets::Configuration.new.load_paths.should == ['/a/widgets', '/b/widgets']
 
       # reset load paths
-      $LOAD_PATH.clear
-      lp.each { |p| $LOAD_PATH.push p }
+      ActiveSupport::Dependencies.autoload_paths.clear
+      lp.each { |p| ActiveSupport::Dependencies.autoload_paths.push p }
     end
 
     it "should toggle widget logging" do

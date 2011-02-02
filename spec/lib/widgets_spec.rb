@@ -18,6 +18,12 @@ describe Widgets do
       end.new
     end
 
+    it "should load widgets" do
+      Widgets.configuration.load_paths = File.join(File.dirname(__FILE__), "../widgets")
+      Widgets.load!
+      defined?(TestWidget).should_not be_nil
+    end
+
     it "should not override #process if it already exists" do
       Class.new do
         def process; 100; end
