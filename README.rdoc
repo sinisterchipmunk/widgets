@@ -9,8 +9,9 @@ manipulates.
 "Widgets" is so named because a single Widget would be expected to add a single specific high-level functionality to a
 given object or set of objects. For instance, there might exist a "navigate home" widget for a GPS device, which would
 be in charge of telling the device where "home" is and other low-level details. The user doesn't want to have to work
-with the internals of the GPS directly; (s)he simply wants to tell it to "go_home"! At runtime, all of the widgets
-contribute their own high-level functionality to produce a very powerful DSL.
+with low-level details of the GPS such as longitude and latitude; (s)he simply wants to tell it to "go_home"!
+
+At runtime, all of the widgets contribute their own high-level functionality to produce a very powerful DSL.
 
 Widgets define a set of entry point methods (the "go_home" method, for instance), which are dynamically added to the
 objects the widget is designed to affect. This allows you to quickly build a flexible yet powerful Ruby-based DSL for
