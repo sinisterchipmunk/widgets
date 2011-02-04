@@ -15,8 +15,11 @@ Jeweler::Tasks.new do |gem|
   gem.name = "widgets"
   gem.homepage = "http://github.com/sinisterchipmunk/widgets"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = "widget, n : a device that is very useful for a particular job"
+  gem.description = %Q{widget, n : a device that is very useful for a particular job
+
+Widgets make it easier for a developer to add internal domain-specific languages (DSLs) to
+their application while keeping the DSL code separate from the objects it manipulates.}
   gem.email = "sinisterchipmunk@gmail.com"
   gem.authors = ["Colin MacKenzie IV"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
