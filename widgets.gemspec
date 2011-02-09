@@ -9,8 +9,11 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Colin MacKenzie IV"]
-  s.date = %q{2011-02-03}
-  s.description = %q{TODO: longer description of your gem}
+  s.date = %q{2011-02-09}
+  s.description = %q{widget, n : a device that is very useful for a particular job
+
+Widgets make it easier for a developer to add internal domain-specific languages (DSLs) to
+their application while keeping the DSL code separate from the objects it manipulates.}
   s.email = %q{sinisterchipmunk@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -45,13 +48,14 @@ Gem::Specification.new do |s|
     "spec/support/ancestry_matcher.rb",
     "spec/support/custom_matchers.rb",
     "spec/support/mock_widgets.rb",
-    "spec/widgets/test_widget.rb"
+    "spec/widgets/test_widget.rb",
+    "widgets.gemspec"
   ]
   s.homepage = %q{http://github.com/sinisterchipmunk/widgets}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.rubygems_version = %q{1.5.0}
+  s.summary = %q{widget, n : a device that is very useful for a particular job}
   s.test_files = [
     "spec/behaviors/widget_entry_points_spec.rb",
     "spec/behaviors/widget_subprocessing_spec.rb",
@@ -67,7 +71,6 @@ Gem::Specification.new do |s|
   ]
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
