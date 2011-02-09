@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{widgets}
-  s.version = "0.0.1"
+  s.version = "0.0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Colin MacKenzie IV"]
@@ -38,6 +38,7 @@ their application while keeping the DSL code separate from the objects it manipu
     "lib/widgets/proxy_set.rb",
     "lib/widgets/railtie.rb",
     "lib/widgets/stderr_logger.rb",
+    "spec/behaviors/widget_delegation_spec.rb",
     "spec/behaviors/widget_entry_points_spec.rb",
     "spec/behaviors/widget_subprocessing_spec.rb",
     "spec/lib/widget_spec.rb",
@@ -57,6 +58,7 @@ their application while keeping the DSL code separate from the objects it manipu
   s.rubygems_version = %q{1.5.0}
   s.summary = %q{widget, n : a device that is very useful for a particular job}
   s.test_files = [
+    "spec/behaviors/widget_delegation_spec.rb",
     "spec/behaviors/widget_entry_points_spec.rb",
     "spec/behaviors/widget_subprocessing_spec.rb",
     "spec/lib/widget_spec.rb",
