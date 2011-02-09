@@ -98,9 +98,15 @@ class Widget
     def entry_point(*method_names)
       method_names.each do |method_name|
         proxy_module.add_entry_point(method_name)
+        entry_points << method_name.to_s
       end
 
       Widgets.imbue_all(proxy_module)
+    end
+
+    # An array of entry points. These are all Strings.
+    def entry_points
+      @entry_points ||= []
     end
 
     # call-seq:

@@ -1,5 +1,5 @@
 module MockWidgets
-  def parent_class
+  def parent_class(&block)
     @parent_class ||= Class.new do
       def self.name
         "Parent"
@@ -7,13 +7,16 @@ module MockWidgets
 
       include Widgets
     end
+
+    @parent_class.class_eval &block if block_given?
+    @parent_class
   end
 
-  def parent
-    @parent ||= parent_class.new
+  def parent(&block)
+    @parent ||= parent_class(&block).new
   end
 
-  def mock_widget(name, &block)
+  def mock_widget(name = "mock", &block)
     @mock_widgets ||= {}
     if @mock_widgets[name]
       @mock_widgets[name].class_eval &block if block_given?
