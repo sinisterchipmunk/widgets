@@ -41,6 +41,7 @@ their application while keeping the DSL code separate from the objects it manipu
     "spec/behaviors/widget_delegation_spec.rb",
     "spec/behaviors/widget_entry_points_spec.rb",
     "spec/behaviors/widget_inheritence_spec.rb",
+    "spec/behaviors/widget_initialization_spec.rb",
     "spec/behaviors/widget_subprocessing_spec.rb",
     "spec/lib/widget_spec.rb",
     "spec/lib/widgets/configuration_spec.rb",

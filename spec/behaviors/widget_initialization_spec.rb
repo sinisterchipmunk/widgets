@@ -17,9 +17,23 @@ describe Widget do
     }
 
     it "should not cause stack level errors" do
-      #proc {
-        @k.new("one")
-      #}.should_not raise_error(SystemStackError)
+      proc { @k.new("one") }.should_not raise_error(SystemStackError)
+    end
+
+    it "should not ignore top-level calls containing ArgumentErrors" do
+      proc {
+        @k.new("one").one(1)
+      }.should raise_error(ArgumentError)
+    end
+
+    it "should raise ArgumentError as expected when nested" do
+      k = @k
+      mock_widget { affects 'nestable'; entry_point :nest; def nest; p k; k.new; end }
+#      proc {
+        @k.new("nestable").nest do
+          one(1)
+        end
+#      }.should raise_error(ArgumentError)
     end
   end
 end

@@ -44,8 +44,13 @@ class Widget
       return _parent.send(name, *args, &block)
     end
 
-    # let super raise NoMethodError
-    super
+    # let super raise NoMethodError, but remove the current level from the stack trace because
+    # it's just clutter to the user.
+    begin
+      super
+    rescue NoMethodError => err
+      raise NoMethodError, err.message, caller
+    end
   end
 
   # A Widget will respond to any method its #parent responds to, because calls to those methods
