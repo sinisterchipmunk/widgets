@@ -48,10 +48,26 @@ module Widgets
     end
 
     def included(base)
+      # TODO Refactor all of this garbage.
       base.class_eval do
+        # TODO FIXME is there a better way to implicitly make subclasses work as expected?
+        if (inherited = methods.include?('inherited')) && !methods.include?('inherited_without_widgets')
+          class << self
+            alias inherited_without_widgets inherited
+            def inherited(base)
+              Widgets.force(base.name, base)
+              inherited_without_widgets(base)
+            end
+          end
+        elsif !inherited
+          def self.inherited(base)
+            Widgets.force(base.name, base)
+          end
+        end
+
         def self.widget_entry_points
           hash = (@widget_entry_points ||= {})
-          hash.merge! super if superclass.instance_methods.include?('widget_entry_points')
+          hash.merge! superclass.widget_entry_points if superclass.methods.include?('widget_entry_points')
           hash
         end
 
@@ -71,9 +87,6 @@ module Widgets
           end
 
           result
-#          if widget.subprocessing_enabled? && block_given?
-#
-#          end
         rescue ArgumentError => ae
           if ae.backtrace[0] =~ /#{Regexp::escape entry_point}/
             raise ArgumentError, ae.message, caller
