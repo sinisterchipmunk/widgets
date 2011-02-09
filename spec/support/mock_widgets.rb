@@ -19,10 +19,12 @@ module MockWidgets
       @mock_widgets[name].class_eval &block if block_given?
     else
       @mock_widgets[name] = begin
-        widget = Class.new(Widget, &block)
+        widget = Class.new(Widget)
 
         # is there a prettier way to override ::name?
         (class << widget; self; end).send(:define_method, :name) { name }
+
+        widget.class_eval(&block)
 
         widget
       end

@@ -47,11 +47,22 @@ module Widgets
       @configuration ||= Widgets::Configuration.new
     end
 
+    # Returns all Widgets which affect the specified class name.
+    def affecting(key)
+      mapping(key).widgets
+    end
+
     # Returns the instance of ProxySet for the given key. The key is expected to correspond with a class name
     # as in the Widget::ClassMethods#affects method.
     def mapping(key)
       @mapping ||= {}
-      @mapping[key] ||= Widgets::ProxySet.new
+      @mapping[normalize_mapping_key(key)] ||= Widgets::ProxySet.new
+    end
+
+    # Returns the given key, converted to a String and then CameLized to resemble a Ruby class name.
+    def normalize_mapping_key(key)
+      key = key.to_s unless key.kind_of?(String)
+      key.camelize
     end
 
     # Returns all proxy sets which include the specified proxy module.

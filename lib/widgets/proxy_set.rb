@@ -1,5 +1,16 @@
 module Widgets
   class ProxySet < Module
+    # An array containing the classes of all widgets which provide proxies into this set.
+    def widgets
+      @widgets ||= []
+    end
+
+    # Adds the widget's proxy methods to this proxy set.
+    def affected_by(widget)
+      widgets << widget unless widgets.include?(widget)
+      imbue(widget.proxy_module)
+    end
+
     # Works around a limitation of Ruby by searching ObjectSpace for any class which has already included this
     # instance of ProxySet, and then reincludes this instance of ProxySet. This has the effect of "refreshing"
     # certain methods, which may be missing.

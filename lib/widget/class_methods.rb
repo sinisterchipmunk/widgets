@@ -113,9 +113,7 @@ class Widget
     def affects(*class_names)
       class_names.each do |class_name|
 #        raise Widgets::InvalidClassName, "Class name #{class_name.inspect} is not a symbol" unless class_name.kind_of?(Symbol)
-        class_name = class_name.to_s unless class_name.kind_of?(String)
-        class_name = class_name.camelize
-        Widgets.mapping(class_name).imbue(proxy_module)
+        Widgets.mapping(class_name).affected_by(self)
       end
     end
   end

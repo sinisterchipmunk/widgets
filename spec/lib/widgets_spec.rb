@@ -12,10 +12,20 @@ describe Widgets do
       Class.new do
         include Widgets
 
+        def self.name; "generic"; end
+
         def id
           @id || raise("No ID!")
         end
       end.new
+    end
+
+    context "with a widget affecting the target" do
+      before(:each) { mock_widget('a_widget') { affects 'generic' } }
+
+      it "should contain affecting widgets in the proxy set" do
+        Widgets.mapping('generic').widgets.should include(mock_widget("a_widget"))
+      end
     end
 
     it "should load widgets" do
