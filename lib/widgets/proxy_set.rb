@@ -49,22 +49,22 @@ module Widgets
 
     def included(base)
       # TODO Refactor all of this garbage.
-      base.class_eval do
-        # why won't this work???
-#        class_inheritable_hash(:widget_entry_points)
-#        write_inheritable_attribute(:widget_entry_points, read_inheritable_attribute(:widget_entry_points) || {})
 
-        def self.widget_entry_points
-          hash = (@widget_entry_points ||= begin
-            if superclass.respond_to?(:widget_entry_points)
-              superclass.widget_entry_points.dup
-            else
-              {}
-            end
-          end)
-          hash
+      # note how we don't call entry_points#dup here. My first instinct was to do that but it's my hope that by not,
+      # we'll be able to track entry points should they for any reason be changed or added to along the way.
+      # This way also saves a tiny bit of time and memory, I think.
+      widget_entry_points = entry_points
+      base.instance_eval do
+        (class << self; self; end).send(:define_method, :widget_entry_points) do
+          if base.superclass.respond_to?(:widget_entry_points)
+            widget_entry_points.merge(base.superclass.widget_entry_points)
+          else
+            widget_entry_points
+          end
         end
+      end
 
+      base.class_eval do
         def widget_entry_points; self.class.widget_entry_points; end
 
         def enter_widget(entry_point, *args, &block)
@@ -89,8 +89,6 @@ module Widgets
           end
         end
       end
-
-      base.widget_entry_points.merge! entry_points
     end
   end
 end
