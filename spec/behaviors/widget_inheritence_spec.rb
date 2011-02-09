@@ -20,6 +20,7 @@ describe Widget do
       end
 
       subclass = Class.new(parent_class) { def self.name; "child"; end }
+      Widgets.force(subclass.name, subclass)
       subclass.new
     end
 

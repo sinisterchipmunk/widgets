@@ -50,24 +50,9 @@ module Widgets
     def included(base)
       # TODO Refactor all of this garbage.
       base.class_eval do
-        # TODO FIXME is there a better way to implicitly make subclasses work as expected?
-        if (inherited = methods.include?('inherited')) && !methods.include?('inherited_without_widgets')
-          class << self
-            alias inherited_without_widgets inherited
-            def inherited(base)
-              Widgets.force(base.name, base)
-              inherited_without_widgets(base)
-            end
-          end
-        elsif !inherited
-          def self.inherited(base)
-            Widgets.force(base.name, base)
-          end
-        end
-
         def self.widget_entry_points
           hash = (@widget_entry_points ||= {})
-          hash.merge! superclass.widget_entry_points if superclass.methods.include?('widget_entry_points')
+          hash.merge! superclass.widget_entry_points if superclass.respond_to?(:widget_entry_points)
           hash
         end
 
