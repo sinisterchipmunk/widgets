@@ -50,16 +50,25 @@ module Widgets
     def included(base)
       # TODO Refactor all of this garbage.
       base.class_eval do
+        # why won't this work???
+#        class_inheritable_hash(:widget_entry_points)
+#        write_inheritable_attribute(:widget_entry_points, read_inheritable_attribute(:widget_entry_points) || {})
+
         def self.widget_entry_points
-          hash = (@widget_entry_points ||= {})
-          hash.merge! superclass.widget_entry_points if superclass.respond_to?(:widget_entry_points)
+          hash = (@widget_entry_points ||= begin
+            if superclass.respond_to?(:widget_entry_points)
+              superclass.widget_entry_points.dup
+            else
+              {}
+            end
+          end)
           hash
         end
 
         def widget_entry_points; self.class.widget_entry_points; end
 
         def enter_widget(entry_point, *args, &block)
-          widget = instantiate_widget(widget_entry_points[entry_point])
+          widget = instantiate_widget(self.class.widget_entry_points[entry_point])
           result = widget.send(entry_point, *args, &block)
 
           if widget.subprocessing_enabled? && block_given?
