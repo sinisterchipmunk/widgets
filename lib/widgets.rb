@@ -28,7 +28,7 @@ module Widgets
     def included(base)
       base.extend Widgets::ClassMethods
       base.process_with :process unless base.public_instance_methods.include?('process')
-      base.send(:include, Widgets.mapping(base.name))
+      force(base.name, base)
     end
 
     # Configure Widgets.
@@ -50,6 +50,13 @@ module Widgets
     # Returns all Widgets which affect the specified class name.
     def affecting(key)
       mapping(key).widgets
+    end
+
+    # Forcibly includes the proxy set for the specified key into the specified base. This completely
+    # ignores whether or not the widgets within the specified set were actually _designed_ for the
+    # base class. Use with care.
+    def force(key, base)
+      base.send(:include, mapping(key))
     end
 
     # Returns the instance of ProxySet for the given key. The key is expected to correspond with a class name
