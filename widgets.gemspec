@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{widgets}
-  s.version = "0.0.0.5"
+  s.version = "0.0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Colin MacKenzie IV"]
-  s.date = %q{2011-02-09}
+  s.date = %q{2011-02-10}
   s.description = %q{widget, n : a device that is very useful for a particular job
 
 Widgets make it easier for a developer to add internal domain-specific languages (DSLs) to

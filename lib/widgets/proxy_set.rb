@@ -54,34 +54,10 @@ module Widgets
       def base.widget_proxy_set
         @widget_proxy_set
       end
-#      def base.widget_entry_points
-#        widget_proxy_set.entry_points
-#      end
+
       base.instance_variable_set("@widget_proxy_set", proxy_set)
 
-#      base.widget_entry_points = self.widget_entry_points
-#      (class << base; self; end).send(:define_method, :widget_entry_points) do
-#        proxy_set.entry_points
-#      end
-
-      # note how we don't call entry_points#dup here. My first instinct was to do that but it's my hope that by not,
-      # we'll be able to track entry points should they for any reason be changed or added to along the way.
-      # This way also saves a tiny bit of time and memory, I think.
-#      widget_entry_points = entry_points
-#      base.instance_eval do
-#        (class << self; self; end).send(:define_method, :widget_entry_points) do
-#          p widget_entry_points
-#          if base.superclass.respond_to?(:widget_entry_points)
-#            widget_entry_points.merge(base.superclass.widget_entry_points)
-#          else
-#            widget_entry_points
-#          end
-#        end
-#      end
-
       base.class_eval do
-#        def widget_entry_points; self.class.widget_entry_points; end
-
         def widget_entry_points
           points = {}
           parent = self.class
@@ -93,7 +69,6 @@ module Widgets
         end
 
         def enter_widget(entry_point, *args, &block)
-          p widget_entry_points
           widget = instantiate_widget(widget_entry_points[entry_point])
           result = widget.send(entry_point, *args, &block)
 
@@ -108,7 +83,12 @@ module Widgets
 
           result
         rescue ArgumentError => ae
-          if ae.backtrace[0] =~ /#{Regexp::escape entry_point}/
+          # ArgumentError: wrong number of arguments (1 for 0)
+          #     from ./lib/widgets/proxy_set.rb:73:in `hi'             [0]
+          #     from ./lib/widgets/proxy_set.rb:73:in `send'           [1]
+          #     from ./lib/widgets/proxy_set.rb:73:in `enter_widget'   [2]
+          #     from ./lib/widgets/proxy_set.rb:42:in `hi'             [3]
+          if ae.backtrace[0] =~ /#{Regexp::escape "in `#{entry_point}'"}/
             raise ArgumentError, ae.message, caller
           else
             raise ae
